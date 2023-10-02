@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Start PerfView": {
+      "commandName": "Executable",
+      "executablePath": "$(RunLocation)\\PerfView.exe",
+      "workingDirectory": "$(RunLocation)",
+      "commandLineArgs": ""
+    }
+  }
+}

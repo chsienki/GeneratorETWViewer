@@ -1,0 +1,91 @@
+﻿<Window x:Class="GeneratorETWViewer.GeneratorEvents"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeneratorETWViewer"
+        xmlns:converters="clr-namespace:GeneratorETWViewer.Converters"
+        xmlns:vm="clr-namespace:GeneratorETWViewer.ViewModels"
+        xmlns:models="clr-namespace:GeneratorETWViewer.Models"
+        xmlns:controls="clr-namespace:GeneratorETWViewer.Controls"
+        xmlns:commands="clr-namespace:GeneratorETWViewer.Command"
+        d:DataContext="{d:DesignInstance Type=vm:TraceViewModel}"
+        mc:Ignorable="d"
+        Title="Generator Execution Info" Height="800" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:NullToRowHeightConverter x:Key="NullToRowHeightConverter" />
+            <converters:StringJoinConverter x:Key="StringJoinConverter" />
+            
+            <commands:OpenDetailedTraceCommand x:Key="OpenDetailedTraceCommand" />
+            <commands:OpenCPUStacksCommand x:Key="OpenCPUStacksCommand" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock>Group By:</TextBlock>
+                <RadioButton Name="RadioButton1" GroupName="Buttons" IsChecked="True" Command="{Binding SwitchViewsCommand}">Generator</RadioButton>
+                <RadioButton Name="RadioButton2" GroupName="Buttons" Command="{Binding SwitchViewsCommand}">Driver Run</RadioButton>
+            </StackPanel>
+
+            <TreeView ItemsSource="{Binding Processes}" Grid.Row="1" >
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:ProcessViewModel}" ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type vm:GeneratorViewModel}" ItemsSource="{Binding Executions}" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}" />
+                            <TextBlock Text="Total runs: " Margin="12,0,0,0" />
+                            <TextBlock Text="{Binding Path=TotalExecutions}" />
+                            <TextBlock Text="Average Time: " Margin="12,0,0,0" />
+                            <TextBlock Text="{Binding Path=AverageExecutionTime, StringFormat=F2}" />
+                            <TextBlock Text="ms" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type vm:DriverRunViewModel}" ItemsSource="{Binding Executions}" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+
+
+                    <DataTemplate DataType="{x:Type vm:GeneratorRunViewModel}" >
+                        <StackPanel Orientation="Horizontal">
+
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open CPU Stacks" Command="{StaticResource OpenCPUStacksCommand}" CommandParameter="{Binding RelativeTimeRange}" />
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+
+                            <TextBlock Text="{Binding StartTime, StringFormat=hh\\:mm\\:ss\\:fff}" />
+                            <TextBlock Text="{Binding Path=Name}" />
+                            <TextBlock Text=" (" />
+                            <TextBlock Text="{Binding Path=ExecutionTime, StringFormat=F2}"/>
+                            <TextBlock Text="ms) [" />
+                            <TextBlock Text="{Binding ChangedInputs, Converter={StaticResource StringJoinConverter}}" />
+                            <TextBlock Text="] " />
+                            <TextBlock Text=" No" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true }" />
+                            <TextBlock Text="{Binding ChangedOutputCount}" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=false }" />
+                            <TextBlock Text=" New Outputs" />
+                            
+                            <TextBlock>
+                                <controls:DoubleClickLink Command="{StaticResource OpenDetailedTraceCommand}" CommandParameter="{Binding}">Double click me</controls:DoubleClickLink>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
+    </Grid>
+</Window>

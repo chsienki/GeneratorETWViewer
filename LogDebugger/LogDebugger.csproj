@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RunLocation>$(MSBuildThisFileDirectory)\..\perfview</RunLocation>
+    <PerfViewExe>$(RunLocation)\PerfView.exe</PerfViewExe>
+    <PerfViewRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\PerfView.exe</PerfViewRefAsm>
+    <CsvReaderRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\CsvReader.dll</CsvReaderRefAsm>
+    <TraceEventRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\Microsoft.Diagnostics.Tracing.TraceEvent.dll</TraceEventRefAsm>
+    <FastSerializationRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\Microsoft.Diagnostics.FastSerialization.dll</FastSerializationRefAsm>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(PerfViewRefAsm)" />
+    <Reference Include="$(TraceEventRefAsm)" />
+    <Reference Include="$(FastSerializationRefAsm)" />
+    <Reference Include="$(CsvReaderRefAsm)" />
+  </ItemGroup>
+
+</Project>

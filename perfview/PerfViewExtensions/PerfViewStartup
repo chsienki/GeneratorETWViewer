@@ -1,0 +1,37 @@
+################################
+# PerfView Startup.  This script gets executed when PerfView starts.  Most logic is in extension DLLs.  However this script
+# allows a certain number of hooks at various places.  The intent is that most extensions can defer loading and simply 
+# declare to be called back at particular places (for particular file extensions or for particular view are clicked. 
+# this keeps extensions pay-for play
+#
+###################
+# OnStartup Command 
+# OnStartup will execute a user command at startup.  This allows extensions to force loading and do initialization at startup.
+# you should NOT do this unless you have to, as it is not pay for play.  The method is called with no arguments.  
+# Try to do as little as possible (typically registering yourself with additional hooks to get called back later). 
+#
+#OnStartup Global.DemoOnStartup
+#
+###################
+# OnFileOpen FileExtension Command
+# OnFileOpen command indicates a callback to be called with the file node  the given extension opened in the viewer.  
+# If you only want to add a new kind of view, consider using DeclareFileView hook instead since your DLL will not be
+# event loaded until someone clicks on your view (rather then when someone clicked on the file)  
+#
+# The callback must take one string argument which is the name of the data file that is being opened.  Typically this 
+# callback adds additional views (children) to the file in the viewer.  
+#
+OnFileOpen .etl GeneratorETWViewer.Open
+#
+#
+###################
+# DeclareFileView Extension ChildName Command Icon HelpLink
+# DeclareFileView command indicates the desire for another view in the viewer for a file of the given extension.   You tell 
+# us the name of this view in the viewer and the name of the callback to invoke if that view is opened.  Optionally you can
+# provide a Icon resource for this child as well as a hyperlink in the help file
+#
+# The callback must take two string arguments the first is the name of the file being opened, and the second is the name of 
+# the view being opened.   Typically you look in the file. and open some new viewport (stackviewer or eventViewer).  
+#
+#DeclareFileView .etl "DemoDeclareFile" Global.DemoDeclareFileView
+#DeclareFileView .etl "Generator Info2" GeneratorETWViewer.TryGetGeneratorInfo 

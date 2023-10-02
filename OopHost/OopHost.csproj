@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <NoWarn>NU1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\perfview\PerfViewData.etl" Link="PerfViewData.etl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\perfview\PerfViewData_Executions.etl" Link="PerfViewData_Executions.etl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\GeneratorETWViewer.csproj" />
+    <PackageReference Include="Vanara.PInvoke.Shell32" Version="3.4.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="test.etl.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- Perfview unpacks its refs to appdata. Make sure you've executed the perfview in the repo before attempting to build -->
+  <PropertyGroup>
+    <RunLocation>$(MSBuildThisFileDirectory)\..\perfview</RunLocation>
+    <PerfViewExe>$(RunLocation)\PerfView.exe</PerfViewExe>
+    <PerfViewRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\PerfView.exe</PerfViewRefAsm>
+    <CsvReaderRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\CsvReader.dll</CsvReaderRefAsm>
+    <TraceEventRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\Microsoft.Diagnostics.Tracing.TraceEvent.dll</TraceEventRefAsm>
+    <FastSerializationRefAsm>$(AppData)\PerfView\$([System.IO.File]::GetLastWriteTime($(PerfViewExe)).ToString("VER.yyyy'-'MM'-'dd'.'HH'.'mm'.'ss.fff"))\Microsoft.Diagnostics.FastSerialization.dll</FastSerializationRefAsm>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(PerfViewRefAsm)" />
+    <Reference Include="$(CsvReaderRefAsm)" />
+    <Reference Include="$(TraceEventRefAsm)" />
+    <Reference Include="$(FastSerializationRefAsm)" />
+  </ItemGroup>
+
+</Project>
