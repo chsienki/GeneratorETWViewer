@@ -139,13 +139,10 @@ namespace GeneratorETWViewer
                     input1Table = missingTable;
                 }
 
-                if (input2Id != -1 && !tables.TryGetValue(input1Id, out var input2Table))
+                Table? input2Table = null;
+                if (input2Id != -1 && !tables.TryGetValue(input2Id, out input2Table))
                 {
                     input2Table = missingTable;
-                }
-                else
-                {
-                    input2Table = null;
                 }
 
                 var transform = new Transform(
