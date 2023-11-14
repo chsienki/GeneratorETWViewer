@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using PerfViewExtensibility;
 
@@ -23,9 +18,10 @@ namespace GeneratorETWViewer.Command
             if(DataFile is not null)
             {
                 (TimeSpan Start, TimeSpan Length) = ((TimeSpan, TimeSpan)) parameter;
-                var cpuStacks = DataFile.CPUStacks();
+                var cpuStacks = DataFile.CPUStacks(false);
                 cpuStacks.Filter.StartTimeRelativeMSec = Start.TotalMilliseconds.ToString();
                 cpuStacks.Filter.EndTimeRelativeMSec = (Start + Length).TotalMilliseconds.ToString();
+                cpuStacks.Filter.GroupRegExs = "";
                 CommandEnvironment.OpenStackViewer(cpuStacks, (window) =>
                 {
                 });

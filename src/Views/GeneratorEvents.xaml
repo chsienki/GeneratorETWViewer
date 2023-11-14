@@ -68,20 +68,21 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
 
-                            <TextBlock Text="{Binding StartTime, StringFormat=hh\\:mm\\:ss\\:fff}" />
                             <TextBlock Text="{Binding Path=Name}" />
                             <TextBlock Text=" (" />
                             <TextBlock Text="{Binding Path=ExecutionTime, StringFormat=F2}"/>
-                            <TextBlock Text="ms) [" />
-                            <TextBlock Text="{Binding ChangedInputs, Converter={StaticResource StringJoinConverter}}" />
-                            <TextBlock Text="] " />
-                            <TextBlock Text=" No" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true }" />
-                            <TextBlock Text="{Binding ChangedOutputCount}" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=false }" />
-                            <TextBlock Text=" New Outputs" />
-                            
-                            <TextBlock>
-                                <controls:DoubleClickLink Command="{StaticResource OpenDetailedTraceCommand}" CommandParameter="{Binding}">Double click me</controls:DoubleClickLink>
+                            <TextBlock Text="ms)" />
+                            <TextBlock Margin="12,0,12,0">
+                                <controls:DoubleClickLink Command="{StaticResource OpenDetailedTraceCommand}" CommandParameter="{Binding}">Analyze</controls:DoubleClickLink>
                             </TextBlock>
+                            <TextBlock Text="0" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true }" />
+                            <TextBlock Text="{Binding ChangedOutputCount}" Visibility="{Binding HadNewOutputs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=false }" />
+                            <TextBlock Text=" New Outputs    StartTime: " />
+                            <TextBlock Text="{Binding StartTime, StringFormat=hh\\:mm\\:ss\\:fff}" />
+                            <TextBlock Text="[" Margin="12,0,0,0" />
+                            <TextBlock Text="{Binding ChangedInputs, Converter={StaticResource StringJoinConverter}}" />
+                            <TextBlock Text="]" />
+
                         </StackPanel>
                     </DataTemplate>
                 </TreeView.Resources>

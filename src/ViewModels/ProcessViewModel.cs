@@ -24,8 +24,7 @@ namespace GeneratorETWViewer.ViewModels
         {
             this.processInfo = processInfo;
 
-            //TODO: make these lazy
-            this.generatorViewModels = new(() => processInfo.generators.Select(gi => new GeneratorViewModel(gi, processInfo)).Cast<object>().ToList());
+            this.generatorViewModels = new(() => processInfo.generators.Select(gi => new GeneratorViewModel(gi, processInfo)).OrderBy(gvm => gvm.Name).Cast<object>().ToList());
             this.driverRunViewModels = new(() => processInfo.generators
                 .SelectMany(g => g.executions)
                 .GroupBy(e => e.driverRun)
