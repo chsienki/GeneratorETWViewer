@@ -25,7 +25,7 @@ namespace GeneratorETWViewer
         internal static bool IsOutputNode(this Transform transform)
         {
             return transform.name == "SourceOutput"
-                || transform.name == "ImplementationOnlyOutput"
+                || transform.name == "ImplementationSourceOutput"
                 || transform.name == "HostOutput";
         }
 
