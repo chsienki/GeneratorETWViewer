@@ -110,6 +110,11 @@ namespace GeneratorETWViewer
 
             void RecordStateTable(TraceEvent data)
             {
+                //var id = (int)data.PayloadValue(0);
+                //if (id == 3491672)
+                //{
+                //    Debugger.Break();
+                //}
                 var previousTableId = (int)data.PayloadByName("previousTable");
                 var newTableId = (int)data.PayloadByName("newTable");
                 var tableType = (string)data.PayloadByName("tableType");
@@ -134,6 +139,11 @@ namespace GeneratorETWViewer
                 var input1Id = (int)data.PayloadByName("input1");
                 var input2Id = (int)data.PayloadByName("input2");
 
+                //if (newTableId == input1Id)
+                //{
+                //    Debugger.Break();
+                //}
+
                 if (!tables.TryGetValue(input1Id, out var input1Table))
                 {
                     input1Table = missingTable;
@@ -146,7 +156,7 @@ namespace GeneratorETWViewer
                 }
 
                 var transform = new Transform(
-                        (int)data.PayloadValue(0),
+                        (int)data.PayloadByName("nodeHashCode"),
                         (string)data.PayloadByName("name"),
                         previousTable,
                         newTable,

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources.xaml" />
     <None Remove="Views\DetailedView.xaml" />
     <None Remove="Views\GeneratorEvents.xaml" />
   </ItemGroup>
@@ -43,6 +44,11 @@
     <Reference Include="$(TraceEventRefAsm)" />
     <Reference Include="$(FastSerializationRefAsm)" />
     <Reference Include="$(CsvReaderRefAsm)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
   </ItemGroup>
 
   <Target Name="CopyForRun" AfterTargets="CoreCompile" Condition="Exists(@(IntermediateAssembly))">

@@ -18,7 +18,7 @@ namespace GeneratorETWViewer.Command
             this.canExecute = canExecute;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         public bool CanExecute(object parameter) => canExecute?.Invoke(parameter) ?? true;
 
