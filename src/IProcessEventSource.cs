@@ -11,6 +11,6 @@ namespace GeneratorETWViewer
     {
         public List<ProcessInfo> ProcessInfo { get; }
 
-        public event EventHandler OnProcessInfoUpdated;
+        public event EventHandler ProcessInfoUpdated;
     }
 }

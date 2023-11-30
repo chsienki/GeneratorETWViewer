@@ -13,7 +13,7 @@ namespace GeneratorETWViewer
 
         public List<Models.ProcessInfo> ProcessInfo { get; }
 
-        public event EventHandler? OnProcessInfoUpdated;
+        public event EventHandler? ProcessInfoUpdated;
 
         public static ETLFileEventSource ExtractGeneratorDriverRuns(TraceLog traceLog, Action<string> onProgress = null)
         {

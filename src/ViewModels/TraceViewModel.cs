@@ -18,7 +18,7 @@ namespace GeneratorETWViewer.ViewModels
 
         public TraceViewModel(IProcessEventSource processEventSource)
         {
-            this.processes = processEventSource.ProcessInfo.Select(pi => new ProcessViewModel(pi)).ToList();
+            this.processes = processEventSource.ProcessInfo.Select((pi, i) => new ProcessViewModel(processEventSource, i)).ToList();
         }
 
         public ICollection<ProcessViewModel> Processes
