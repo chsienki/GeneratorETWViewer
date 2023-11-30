@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GeneratorETWViewer.Models;
 using Microsoft.Diagnostics.Tracing;
@@ -53,12 +54,32 @@ namespace GeneratorETWViewer
         {
             if (!generatorTimingInfo.ContainsKey(processID))
             {
-                generatorTimingInfo[processID] = new Models.ProcessInfo(processName, new List<GeneratorInfo>(), new Dictionary<int, Table>(), 1);
+                generatorTimingInfo[processID] = new Models.ProcessInfo(getProcessName(processID, processName), new List<GeneratorInfo>(), new Dictionary<int, Table>(), 1);
             }
             if (!executionIds.ContainsKey(processID))
             {
                 executionIds[processID] = 0;
             }
+
+            static string getProcessName(int processID, string processName)
+            {
+                if (!string.IsNullOrWhiteSpace(processName))
+                {
+                    return processName;
+                }
+
+                processName = "Process";
+                foreach (var proc in Process.GetProcesses())
+                {
+                    if (proc.Id == processID)
+                    {
+                        processName = proc.ProcessName;
+                        break;
+                    }
+                }
+                return $"{processName} ({processID})";
+            }
+
         }
 
         void RecordGeneratorExecution(TraceEvent data)
