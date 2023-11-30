@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,19 +15,26 @@ namespace GeneratorETWViewer.ViewModels
 {
     internal class TraceViewModel : INotifyPropertyChanged
     {
-        private readonly List<ProcessViewModel> processes;
+        private readonly IProcessEventSource processEventSource;
 
         public TraceViewModel(IProcessEventSource processEventSource)
         {
-            this.processes = processEventSource.ProcessInfo.Select((pi, i) => new ProcessViewModel(processEventSource, i)).ToList();
+            this.processEventSource = processEventSource;
+            this.processEventSource.ProcessInfoUpdated += (o, e) => UpdateProcessList();
+            UpdateProcessList();
         }
 
-        public ICollection<ProcessViewModel> Processes
+        public ObservableCollection<ProcessViewModel> Processes { get; } = [];
+
+        private void UpdateProcessList()
         {
-            get => processes;
+            for (int i = Processes.Count; i < processEventSource.ProcessInfo.Count; i++)
+            {
+                Processes.Add(new ProcessViewModel(processEventSource, i));
+            }
         }
 
-        public DelegateCommand SwitchViewsCommand => new DelegateCommand((o) => { foreach (var p in processes) { p.SwitchViews(); } });
+        public DelegateCommand SwitchViewsCommand => new DelegateCommand((o) => { foreach (var p in Processes) { p.SwitchViews(); } });
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
