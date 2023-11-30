@@ -106,10 +106,10 @@ namespace GeneratorETWViewer
 
             public override void Open(Window parentWindow, StatusBar worker, Action? doAfter = null)
             {
-                List<Models.ProcessInfo>? results = null;
+                ETLFileEventSource? results = null;
                 worker.StartWork("Loading generator events", () =>
                 {
-                    results = ETLFileEventSource.ExtractGeneratorDriverRuns(traceLog, s => worker.Log(s)).ProcessInfo;
+                    results = ETLFileEventSource.ExtractGeneratorDriverRuns(traceLog, s => worker.Log(s));
                     worker.EndWork(() => { });
                 },
                 () =>
