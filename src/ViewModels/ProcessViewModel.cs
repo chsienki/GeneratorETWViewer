@@ -41,7 +41,7 @@ namespace GeneratorETWViewer.ViewModels
                 var generators = processInfo.generators.OrderBy(g => g.name).ToList();
                 for (int i = currentView.Count; i < generators.Count; i++)
                 {
-                    currentView.Add(new GeneratorViewModel(generators[i], processInfo));
+                    currentView.Add(new GeneratorViewModel(eventSource, processIndex, i));
                 }
             }
             else
