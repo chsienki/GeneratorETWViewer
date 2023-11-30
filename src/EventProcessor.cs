@@ -35,7 +35,7 @@ namespace GeneratorETWViewer
                         break;
                     case "SingleGeneratorRunTime/Start":
                         // start processing a new generator run
-                        currentExecutions[(e.ProcessID, e.ThreadID)] = new List<Transform>();
+                        currentExecutions[(e.ProcessID, e.ThreadID)] = [];
                         break;
                     case "SingleGeneratorRunTime/Stop":
                         RecordGeneratorExecution(e);
@@ -44,6 +44,8 @@ namespace GeneratorETWViewer
                         RecordStateTable(e);
                         break;
                 }
+
+                OnProcessInfoUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
 

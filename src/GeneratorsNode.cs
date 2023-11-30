@@ -109,7 +109,7 @@ namespace GeneratorETWViewer
                 List<Models.ProcessInfo>? results = null;
                 worker.StartWork("Loading generator events", () =>
                 {
-                    results = GeneratorEventExtractor.ExtractGeneratorDriverRuns(traceLog, s => worker.Log(s));
+                    results = ETLFileEventSource.ExtractGeneratorDriverRuns(traceLog, s => worker.Log(s)).ProcessInfo;
                     worker.EndWork(() => { });
                 },
                 () =>
