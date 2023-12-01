@@ -10,6 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\perfview\DebugCombine.etl" Link="DebugCombine.etl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\perfview\PerfViewData.etl" Link="PerfViewData.etl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
