@@ -17,9 +17,11 @@ namespace GeneratorETWViewer
 
         private readonly TraceEventSession traceEventSession;
 
-        private readonly EventProcessor processor;
+        private EventProcessor processor;
 
         public List<ProcessInfo> ProcessInfo { get => processor.ProcessInfo; }
+
+        public bool SupportsClear => false; // suprisingly complicated :/
 
         public LiveEventSource()
         {
@@ -30,13 +32,15 @@ namespace GeneratorETWViewer
 
             processor = new EventProcessor();
             processor.OnProcessInfoUpdated += (o, e) => RunOnUiThread(() => ProcessInfoUpdated?.Invoke(o, e));
-
             traceEventSession = new TraceEventSession("Microsoft-CodeAnalysis-Generators-Trace-Session");
             traceEventSession.Source.Dynamic.AddCallbackForProviderEvents(ShouldAccept, processor.ProcessEvent);
             traceEventSession.EnableProvider("Microsoft-CodeAnalysis-General", providerLevel: TraceEventLevel.Verbose);
 
             Task.Run(traceEventSession.Source.Process);
         }
+
+
+        public void Clear() => processor.Clear();
 
         private EventFilterResponse ShouldAccept(string providerName, string eventName)
         {

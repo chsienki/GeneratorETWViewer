@@ -15,6 +15,10 @@ namespace GeneratorETWViewer
 
         public event EventHandler? ProcessInfoUpdated;
 
+        public bool SupportsClear => false;
+
+        public void Clear() => throw new NotImplementedException();
+
         public static ETLFileEventSource ExtractGeneratorDriverRuns(TraceLog traceLog, Action<string> onProgress = null)
         {
             var processor = new EventProcessor();

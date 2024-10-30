@@ -36,6 +36,10 @@ namespace GeneratorETWViewer.ViewModels
 
         public DelegateCommand SwitchViewsCommand => new DelegateCommand((o) => { foreach (var p in Processes) { p.SwitchViews(); } });
 
+        public DelegateCommand ClearResultsCommand => new DelegateCommand((o) => processEventSource.Clear());
+
+        public bool CanClear => processEventSource.SupportsClear;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void RaisePropertyChanged([CallerMemberName] string propertyName = "")

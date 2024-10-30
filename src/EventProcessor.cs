@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Permissions;
+using System.Text;
 using GeneratorETWViewer.Models;
 using Microsoft.Diagnostics.Tracing;
 
@@ -31,8 +33,10 @@ namespace GeneratorETWViewer
                         currentRunId[(e.ProcessID, e.ThreadID)] = executionIds[e.ProcessID]++;
                         break;
                     case "GeneratorDriverRunTime/Stop":
-                        EnsureProcessSlot(e.ProcessID, e.ProcessName);
-                        generatorTimingInfo[e.ProcessID] = generatorTimingInfo[e.ProcessID] with { totalExecutions = generatorTimingInfo[e.ProcessID].totalExecutions + 1 };
+                        if (generatorTimingInfo.ContainsKey(e.ProcessID))
+                        {
+                            generatorTimingInfo[e.ProcessID] = generatorTimingInfo[e.ProcessID] with { totalExecutions = generatorTimingInfo[e.ProcessID].totalExecutions + 1 };
+                        }
                         break;
                     case "SingleGeneratorRunTime/Start":
                         // start processing a new generator run
@@ -48,6 +52,14 @@ namespace GeneratorETWViewer
 
                 OnProcessInfoUpdated?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public void Clear()
+        {
+            executionIds.Clear();
+            generatorTimingInfo.Clear();
+            currentExecutions.Clear();
+            currentRunId.Clear();
         }
 
         void EnsureProcessSlot(int processID, string processName = "")
@@ -82,9 +94,14 @@ namespace GeneratorETWViewer
 
         }
 
+        bool IsMissingExecutions(TraceEvent data)
+        {
+            return !currentExecutions.ContainsKey((data.ProcessID, data.ThreadID)) || !generatorTimingInfo.ContainsKey(data.ProcessID) || !currentRunId.ContainsKey((data.ProcessID, data.ThreadID));
+        }
+
         void RecordGeneratorExecution(TraceEvent data)
         {
-            if (!currentExecutions.ContainsKey(((data.ProcessID, data.ThreadID))) || !generatorTimingInfo.ContainsKey(data.ProcessID))
+            if (IsMissingExecutions(data))
             {
                 // we never saw a start event for this run, meaning it's incomplete. Just drop it.
                 return;
@@ -112,6 +129,12 @@ namespace GeneratorETWViewer
 
         void RecordStateTable(TraceEvent data)
         {
+            if (IsMissingExecutions(data))
+            {
+                // we never saw a start event for this run, meaning it's incomplete. Just drop it.
+                return;
+            }
+
             var previousTableId = (int)data.PayloadByName("previousTable");
             var newTableId = (int)data.PayloadByName("newTable");
             var tableType = (string)data.PayloadByName("tableType");
@@ -130,7 +153,7 @@ namespace GeneratorETWViewer
 
             if (newTable.id == -1)
             {
-                newTable = previousTable;
+                newTable = AsCached(previousTable);
             }
 
             var input1Id = (int)data.PayloadByName("input1");
@@ -158,5 +181,20 @@ namespace GeneratorETWViewer
 
             currentExecutions[(data.ProcessID, data.ThreadID)].Add(transform);
         }
+
+        Table AsCached(Table table)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var c in table.content)
+            {
+                if(c is 'A' or 'C' or 'M')
+                {
+                    sb.Append('C');
+                }
+            }
+            return table with { content = sb.ToString() } ;
+        }
+
+
     }
 }

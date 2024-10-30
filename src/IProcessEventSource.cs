@@ -8,9 +8,13 @@ using GeneratorETWViewer.Models;
 namespace GeneratorETWViewer
 {
     internal interface IProcessEventSource
-    {
+    { 
         public List<ProcessInfo> ProcessInfo { get; }
 
         public event EventHandler ProcessInfoUpdated;
+
+        public bool SupportsClear { get; }
+
+        public void Clear();
     }
 }

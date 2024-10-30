@@ -83,8 +83,6 @@ namespace GeneratorETWViewer
             public override void Open(Window parentWindow, StatusBar worker, Action? doAfter = null)
             {
                 // oh, but we're going to use the stacks view, so we just need to mutate the events into a stack 
-
-
                 var s = new Stacks(new MyStackSource());
                 CommandEnvironment.OpenStackViewer(s);
             }
