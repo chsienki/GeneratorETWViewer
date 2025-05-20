@@ -34,6 +34,8 @@
                 <RadioButton Name="RadioButton1" GroupName="Buttons" IsChecked="True" Command="{Binding SwitchViewsCommand}">Generator</RadioButton>
                 <RadioButton Name="RadioButton2" GroupName="Buttons" Command="{Binding SwitchViewsCommand}">Driver Run</RadioButton>
                 <Button Command="{Binding ClearResultsCommand}" Visibility="{Binding CanClear, Converter={StaticResource BoolToVisibilityConverter}}">Clear Results</Button>
+                <Button Command="{Binding ExportDataCommand}">Export Results</Button>
+
             </StackPanel>
 
             <TreeView ItemsSource="{Binding Processes}" Grid.Row="1" >

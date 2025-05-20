@@ -38,6 +38,8 @@ namespace GeneratorETWViewer.ViewModels
 
         public DelegateCommand ClearResultsCommand => new DelegateCommand((o) => processEventSource.Clear());
 
+        public DelegateCommand ExportDataCommand => new DelegateCommand((o) => DataExporter.ExportAndOpenFile(processEventSource));
+
         public bool CanClear => processEventSource.SupportsClear;
 
         public event PropertyChangedEventHandler? PropertyChanged;
