@@ -40,7 +40,7 @@ namespace GeneratorETWViewer
                         break;
                     case "SingleGeneratorRunTime/Start":
                         // start processing a new generator run
-                        currentExecutions[(e.ProcessID, e.ThreadID)] = [];
+                        currentExecutions[(e.ProcessID, e.ThreadID)] = [GenerateStartPlaceholder(e)];
                         break;
                     case "SingleGeneratorRunTime/Stop":
                         RecordGeneratorExecution(e);
@@ -54,6 +54,9 @@ namespace GeneratorETWViewer
             }
         }
 
+        private Transform GenerateStartPlaceholder(TraceEvent e)
+            => new(-1, "GeneratorStart", ToEventTime(e, TimeSpan.Zero), missingTable, missingTable, missingTable, missingTable);
+
         public void Clear()
         {
             executionIds.Clear();
@@ -66,7 +69,7 @@ namespace GeneratorETWViewer
         {
             if (!generatorTimingInfo.ContainsKey(processID))
             {
-                generatorTimingInfo[processID] = new Models.ProcessInfo(getProcessName(processID, processName), new List<GeneratorInfo>(), new Dictionary<int, Table>(), 1);
+                generatorTimingInfo[processID] = new Models.ProcessInfo(getProcessName(processID, processName), [], [], 1);
             }
             if (!executionIds.ContainsKey(processID))
             {
@@ -107,24 +110,23 @@ namespace GeneratorETWViewer
                 return;
             }
 
-            var transforms = currentExecutions[(data.ProcessID, data.ThreadID)];
+            var transforms = currentExecutions[(data.ProcessID, data.ThreadID)].Skip(1); // skip the start timing sentinal
             var runId = currentRunId[(data.ProcessID, data.ThreadID)];
             var processInfo = generatorTimingInfo[data.ProcessID];
 
             var generatorName = (string)data.PayloadByName("generatorName");
             var assemblyPath = (string)data.PayloadByName("assemblyPath");
             var elapsedTime = TimeSpan.FromTicks((long)data.PayloadByName("elapsedTicks"));
-            var startTime = data.TimeStamp.Subtract(elapsedTime);
-            var relativeStartTime = TimeSpan.FromMilliseconds(data.TimeStampRelativeMSec);
+            var eventTime = ToEventTime(data, elapsedTime);
 
             var info = processInfo.generators.SingleOrDefault(i => i.name == generatorName && i.assembly == assemblyPath);
             if (info is null)
             {
-                info = new GeneratorInfo(generatorName, assemblyPath, new List<GeneratorRun>() { });
+                info = new GeneratorInfo(generatorName, assemblyPath, []);
                 processInfo.generators.Add(info);
             }
 
-            info.executions.Add(new GeneratorRun(runId, startTime, relativeStartTime, elapsedTime, new List<Transform>(transforms)));
+            info.executions.Add(new GeneratorRun(runId, eventTime, [.. transforms]));
         }
 
         void RecordStateTable(TraceEvent data)
@@ -134,6 +136,11 @@ namespace GeneratorETWViewer
                 // we never saw a start event for this run, meaning it's incomplete. Just drop it.
                 return;
             }
+
+            var previousTransform = currentExecutions[(data.ProcessID, data.ThreadID)].Last();
+            // calculate the time between the last event to give us a pretty good idea of how long this event took.
+            var time = ToEventTime(data, FromMS(data.TimeStampRelativeMSec).Subtract(previousTransform.time.relativeEnd));
+
 
             var previousTableId = (int)data.PayloadByName("previousTable");
             var newTableId = (int)data.PayloadByName("newTable");
@@ -173,6 +180,7 @@ namespace GeneratorETWViewer
             var transform = new Transform(
                     (int)data.PayloadByName("nodeHashCode"),
                     (string)data.PayloadByName("name"),
+                    time,
                     previousTable,
                     newTable,
                     input1Table,
@@ -187,14 +195,26 @@ namespace GeneratorETWViewer
             StringBuilder sb = new StringBuilder();
             foreach (var c in table.content)
             {
-                if(c is 'A' or 'C' or 'M')
+                if (c is 'A' or 'C' or 'M')
                 {
                     sb.Append('C');
                 }
             }
-            return table with { content = sb.ToString() } ;
+            return table with { content = sb.ToString() };
         }
 
+        TimeSpan FromMS(double ms) => TimeSpan.FromTicks((long)(ms * 10_000));
 
+        EventTime ToEventTime(TraceEvent data, TimeSpan duration)
+        {
+            // data.Timestamp is the time that event was recorded, which is at the end of the actual work
+            // we subtract the duration from the reported time to get the actual start time of the work that occurred
+            return new EventTime(
+                start: data.TimeStamp.Subtract(duration),
+                end: data.TimeStamp,
+                relativeStart: FromMS(data.TimeStampRelativeMSec).Subtract(duration),
+                relativeEnd: FromMS(data.TimeStampRelativeMSec),
+                duration);
+        }
     }
 }

@@ -8,6 +8,7 @@
         xmlns:vm="clr-namespace:GeneratorETWViewer.ViewModels"
         xmlns:models="clr-namespace:GeneratorETWViewer.Models"
         xmlns:controls="clr-namespace:GeneratorETWViewer.Controls"
+        xmlns:commands="clr-namespace:GeneratorETWViewer.Command"
         d:DataContext="{d:DesignInstance Type=vm:DetailedExecutionViewModel}"
         mc:Ignorable="d"
         Height="400" Width="800">
@@ -17,6 +18,7 @@
             <converters:NullToRowHeightConverter x:Key="NullToRowHeightConverter" />
             <converters:StringJoinConverter x:Key="StringJoinConverter" />
 
+            <commands:OpenCPUStacksCommand x:Key="OpenCPUStacksCommand" />
         </ResourceDictionary>
     </Window.Resources>
     <Window.Title>
@@ -48,7 +50,16 @@
                     <Grid>
                         <StackPanel Orientation="Horizontal" Visibility="{Binding IsCached, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" >
                             <TextBlock Text="{Binding Path=Name}" />
+                            <TextBlock Text=" (" />
+                            <TextBlock Text="{Binding Path=DurationInclusive}" />
+                            <TextBlock Text="ms)" />
+                    
                             <!--<Button />-->
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open CPU Stacks" Command="{StaticResource OpenCPUStacksCommand}" CommandParameter="{Binding EventTime}" />
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                         </StackPanel>
                         <TextBlock Text="{Binding Path=Name}" Foreground="Gainsboro" Visibility="{Binding IsCached, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=false}" />
                     </Grid>
@@ -59,14 +70,20 @@
 
         <Grid Grid.Column="2" DataContext="{Binding SelectedModel}">
             <StackPanel>
-                <TextBlock Text="Name:" />
+                <TextBlock Text="Name:" FontWeight="Bold" />
                 <TextBlock Text="{Binding Name}" />
-                <TextBlock Text="Type:" />
+                
+                <TextBlock Text="Type:" FontWeight="Bold" />
                 <TextBlock Text="{Binding Type}" />
-                <TextBlock Text="Previous States:" />
+                
+                <TextBlock Text="Previous States:" FontWeight="Bold" />
                 <TextBlock Text="{Binding PreviousStates}" />
-                <TextBlock Text="New States:" />
+                
+                <TextBlock Text="New States:" FontWeight="Bold" />
                 <TextBlock Text="{Binding NewStates}" />
+
+                <TextBlock Text="Duration:" FontWeight="Bold" />
+                <TextBlock Text="{Binding Duration, StringFormat=G}" />
             </StackPanel>
         </Grid>
 

@@ -67,7 +67,7 @@
 
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Open CPU Stacks" Command="{StaticResource OpenCPUStacksCommand}" CommandParameter="{Binding RelativeTimeRange}" />
+                                    <MenuItem Header="Open CPU Stacks" Command="{StaticResource OpenCPUStacksCommand}" CommandParameter="{Binding EventTime}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
 

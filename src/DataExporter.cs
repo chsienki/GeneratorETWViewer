@@ -20,7 +20,7 @@ namespace GeneratorETWViewer
                     {
                         foreach (var execution in generator.executions)
                         {
-                            stream.WriteLine($"{process.Name},{generator.name},{generator.assembly},{execution.driverRun},{execution.startTime:HH:mm:ss.fff},{execution.executionTime.TotalMilliseconds}");
+                            stream.WriteLine($"{process.Name},{generator.name},{generator.assembly},{execution.driverRun},{execution.time.start:HH:mm:ss.fff},{execution.time.duration.TotalMilliseconds}");
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using GeneratorETWViewer.Models;
 using PerfViewExtensibility;
 
 namespace GeneratorETWViewer.Command
@@ -17,10 +18,10 @@ namespace GeneratorETWViewer.Command
         {
             if(DataFile is not null)
             {
-                (TimeSpan Start, TimeSpan Length) = ((TimeSpan, TimeSpan)) parameter;
+                EventTime time = (EventTime)parameter;
                 var cpuStacks = DataFile.CPUStacks(false);
-                cpuStacks.Filter.StartTimeRelativeMSec = Start.TotalMilliseconds.ToString();
-                cpuStacks.Filter.EndTimeRelativeMSec = (Start + Length).TotalMilliseconds.ToString();
+                cpuStacks.Filter.StartTimeRelativeMSec = time.relativeStart.TotalMilliseconds.ToString();
+                cpuStacks.Filter.EndTimeRelativeMSec = time.relativeEnd.TotalMilliseconds.ToString();
                 cpuStacks.Filter.GroupRegExs = "";
                 CommandEnvironment.OpenStackViewer(cpuStacks, (window) =>
                 {

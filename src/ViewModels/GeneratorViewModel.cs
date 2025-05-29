@@ -44,5 +44,5 @@ internal class GeneratorViewModel : INotifyPropertyChanged
     
     public int TotalExecutions { get => generatorInfo.executions.Count; }
 
-    public double AverageExecutionTime { get => generatorInfo.executions.Select(e => e.executionTime.TotalMilliseconds).Average();} 
+    public double AverageExecutionTime { get => generatorInfo.executions.Select(e => e.time.duration.TotalMilliseconds).Average();} 
 }

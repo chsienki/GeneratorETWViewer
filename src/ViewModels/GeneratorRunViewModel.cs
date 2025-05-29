@@ -13,11 +13,11 @@ internal class GeneratorRunViewModel(string name, GeneratorRun executionInfo, Ge
 
     public GeneratorRun ExecutionInfo { get; } = executionInfo;
 
-    public double ExecutionTime { get => ExecutionInfo.executionTime.TotalMilliseconds; }
+    public double ExecutionTime { get => ExecutionInfo.time.duration.TotalMilliseconds; }
 
-    public DateTime StartTime { get => ExecutionInfo.startTime; }
+    public DateTime StartTime { get => ExecutionInfo.time.start; }
 
-    public (TimeSpan StartTime, TimeSpan ExecutionTime) RelativeTimeRange { get => (ExecutionInfo.relativeStartTime, ExecutionInfo.executionTime); }
+    public EventTime EventTime { get => ExecutionInfo.time; }
 
     public string Name { get => name; }
 

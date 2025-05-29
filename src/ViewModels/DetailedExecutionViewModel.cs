@@ -67,7 +67,7 @@ namespace GeneratorETWViewer.ViewModels
                 var input1 = getVmForInput(transform.input1);
                 var input2 = getVmForInput(transform.input2);
 
-                var vm = new TransformViewModel(transform, [input1, input2], []);
+                var vm = new TransformViewModel(transform, [input1, input2]);
 
                 return vm;
             }
