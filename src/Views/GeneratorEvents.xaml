@@ -58,6 +58,8 @@
                     <HierarchicalDataTemplate DataType="{x:Type vm:DriverRunViewModel}" ItemsSource="{Binding Executions}" >
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Path=Name}" />
+                            <TextBlock Text="Average Time: " Margin="12,0,0,0" />
+                            <TextBlock Text="{Binding Path=AverageExecutionTime, StringFormat=F2}" />
                         </StackPanel>
                     </HierarchicalDataTemplate>
 

@@ -11,6 +11,8 @@ namespace GeneratorETWViewer.ViewModels
     {
         public string Name { get => $"Run {count}"; }
 
+        public double AverageExecutionTime { get => Executions.Select(e => e.ExecutionTime).Average(); }
+
         public ICollection<GeneratorRunViewModel> Executions { get => generators
                 .Select(generator => (generator, generator.executions.SingleOrDefault(e => e.driverRun == count)))
                 .Where(p => p.Item2 is not null)
