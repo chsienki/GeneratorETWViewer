@@ -34,7 +34,7 @@ namespace GeneratorETWViewer
         {
         }
 
-        public override void Open(Window parentWindow, StatusBar worker, Action doAfter = null)
+        public override void Open(Window parentWindow, StatusBar worker, Action? doAfter = null)
         {
             var etlFile = CommandEnvironment.OpenETLFile(dataFile);
             if (!etlFile.Events.EventNames.Any(n => n.Contains(Commands.CodeAnalysisEtwName)))

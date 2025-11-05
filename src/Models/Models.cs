@@ -8,7 +8,7 @@ namespace GeneratorETWViewer.Models
 {
     record Table(int id, string content, string type);
     record Transform(int nodeHashCode, string name, EventTime time, Table previousTable, Table newTable, Table input1, Table? input2);
-    record GeneratorRun(int driverRun, EventTime time, List<Transform> transforms);
+    record GeneratorRun(int driverRun, string projectName, EventTime time, List<Transform> transforms);
     record GeneratorInfo(string name, string assembly, List<GeneratorRun> executions);
     //record DriverRun(int id, List<GeneratorInfo> generators);
     record ProcessInfo(string Name, List<GeneratorInfo> generators, Dictionary<int, Table> tables, int totalExecutions);

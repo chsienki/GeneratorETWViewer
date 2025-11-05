@@ -21,6 +21,8 @@ internal class GeneratorRunViewModel(string name, GeneratorRun executionInfo, Ge
 
     public string Name { get => name; }
 
+    public string Project { get => ExecutionInfo.projectName; }
+
     public List<string> ChangedInputs { get => ExecutionInfo.transforms.Where(t => t.IsInputNode() && !t.IsCached()).Select(t => t.name).Distinct().ToList(); }
 
     public int ChangedOutputCount { get => ExecutionInfo.transforms.Where(t => t.IsOutputNode() && !t.IsCached()).Count(); }

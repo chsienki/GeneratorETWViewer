@@ -65,7 +65,7 @@ namespace GeneratorETWViewer
             currentRunId.Clear();
         }
 
-        void EnsureProcessSlot(int processID, string processName = "")
+        void EnsureProcessSlot(int processID, string processName = "", string projectName = "")
         {
             if (!generatorTimingInfo.ContainsKey(processID))
             {
@@ -115,6 +115,7 @@ namespace GeneratorETWViewer
             var processInfo = generatorTimingInfo[data.ProcessID];
 
             var generatorName = (string)data.PayloadByName("generatorName");
+            var projectName = (string)(data.PayloadByName("projectName") ?? "<unknown project>");
             var assemblyPath = (string)data.PayloadByName("assemblyPath");
             var elapsedTime = TimeSpan.FromTicks((long)data.PayloadByName("elapsedTicks"));
             var eventTime = ToEventTime(data, elapsedTime);
@@ -126,7 +127,7 @@ namespace GeneratorETWViewer
                 processInfo.generators.Add(info);
             }
 
-            info.executions.Add(new GeneratorRun(runId, eventTime, [.. transforms]));
+            info.executions.Add(new GeneratorRun(runId, projectName, eventTime, [.. transforms]));
         }
 
         void RecordStateTable(TraceEvent data)

@@ -33,7 +33,7 @@ internal class GeneratorViewModel : INotifyPropertyChanged
         generatorInfo = eventSource.ProcessInfo[processIndex].generators[generatorIndex];
         for (int i = Executions.Count; i < generatorInfo.executions.Count; i++)
         {
-            Executions.Add(new GeneratorRunViewModel($" Run {i}", generatorInfo.executions[i], generatorInfo, eventSource.ProcessInfo[processIndex]));
+            Executions.Add(new GeneratorRunViewModel(generatorInfo.name ?? $" Run {i}", generatorInfo.executions[i], generatorInfo, eventSource.ProcessInfo[processIndex]));
         }
 
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalExecutions)));

@@ -72,6 +72,9 @@
                             </StackPanel.ContextMenu>
 
                             <TextBlock Text="{Binding Path=Name}" />
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding Path=Project}"/>
+                            <TextBlock Text=" "/>
                             <TextBlock Text=" (" />
                             <TextBlock Text="{Binding Path=ExecutionTime, StringFormat=F2}"/>
                             <TextBlock Text="ms)" />
